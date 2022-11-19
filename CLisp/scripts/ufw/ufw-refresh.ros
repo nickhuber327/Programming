@@ -1,7 +1,16 @@
 #!/bin/sh
+
+;;;; UFW refresh
+;;;  The purpose of this script is to check refresh which hosts are allowed to access a machine
+;;;  by checking their current IPs, using hostnames, and checking them against IPs currently allowed access
+;;;  in UFW.
+;;;  Script must be run as ROOT user
+
+;;; *TODO* modify to allow for arbitrary number of hosts
+
 #|-*- mode:lisp -*-|#
 #|
-exec ros -Q -- $0 "$@"
+exec ros -Q -- $0 "$@"                  ; ; ; ; ; ; ; ; ; ;
 |#
 (progn ;;init forms
   (ros:ensure-asdf)
