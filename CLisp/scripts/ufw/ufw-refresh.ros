@@ -1,0 +1,51 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp(ql:quickload '() :silent t)
+  )
+
+(defpackage :ros.script.ufw-refresh.3876675733
+  (:use :cl))
+(in-package :ros.script.ufw-refresh.3876675733)
+
+(defparameter *hostname* "jumpserver")
+(defparameter *port* "22")
+
+(defun get-current-ip (hostname)
+  (car (uiop:split-string (uiop:run-program (uiop:strcat "/usr/bin/getent ahosts " hostname) :output :string))))
+
+(defun get-jumpserver-ip ()
+  (get-current-ip *hostname*))
+
+(defun get-old-ip ()
+  (cdr (uiop:split-string (uiop:run-program "/usr/sbin/ufw status"))))
+
+(defun delete-old-rule (ip port)
+  (uiop:run-program (uiop:strcat "/usr/sbin/ufw delete allow from " ip " to any port " port) :output :string))
+
+(defun delete-old-jumpserver ()
+  (delete-old-rule (get-jumpserver-ip) *port*))
+
+(defun add-new-rule (ip port)
+  (uiop:run-program (uiop:strcat"/usr/sbin/ufw insert 1 allow from " ip " to any port " port) :output :string))
+
+(defun add-new-jumpserver ()
+  (add-new-rule (get-jumpserver-ip) *port*))
+
+(defun replace-ip (new-ip old-ip)
+  (cond ((string= new-ip old-ip)
+         (progn
+           (delete-old-jumpserver)
+           (add-new-jumpserver)))))
+
+(defun replace-jumpserver ()
+  (replace-ip (get-old-ip) (get-jumpserver-ip)))
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (replace-jumpserver))
+;;; vim: set ft=lisp lisp:
