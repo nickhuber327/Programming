@@ -1,2 +1,3 @@
 Ansible/*
-CLisp/scripts/ufw/*
+Clisp/scripts/ufw/
+Clisp/scripts/ufw/*
