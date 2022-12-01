@@ -1,4 +1,8 @@
 #!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"                  ; ; ; ; ; ; ; ; ; ;
+|#
 
 ;;;; UFW refresh
 ;;;  The purpose of this script is to check refresh which hosts are allowed to access a machine
@@ -7,11 +11,7 @@
 ;;;  Script must be run as ROOT user
 
 ;;; *TODO* modify to allow for arbitrary number of hosts
-
-#|-*- mode:lisp -*-|#
-#|
-exec ros -Q -- $0 "$@"                  ; ; ; ; ; ; ; ; ; ;
-|#
+    
 (progn ;;init forms
   (ros:ensure-asdf)
   #+quicklisp(ql:quickload '() :silent t)
